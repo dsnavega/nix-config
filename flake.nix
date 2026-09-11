@@ -14,15 +14,22 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Darwin (macOS)
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
   };
 
   outputs =
@@ -32,51 +39,13 @@
       home-manager,
       stylix,
       nix-darwin,
+      nix-homebrew,
       llm-agents,
       ...
     }@inputs:
     {
       nixosConfigurations = {
-        zenbook = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs self; };
-          modules = [
-            # host
-            ./hosts/zenbook/configuration.nix
-            ./hosts/zenbook/hardware-configuration.nix
-            # overlays
-            { nixpkgs.overlays = import ./modules/overlays inputs; }
-            # stylix
-            stylix.nixosModules.stylix
-            # home-manager
-            home-manager.nixosModules.home-manager
-            ./home-manager/nixos
-            {
-              home-manager.users.navega =
-                import ./home-manager/users/navega/profiles/desktop;
-            }
-          ];
-        };
-        strix = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs self; };
-          modules = [
-            # host
-            ./hosts/strix/configuration.nix
-            ./hosts/strix/hardware-configuration.nix
-            # overlays
-            { nixpkgs.overlays = import ./modules/overlays inputs; }
-            # stylix
-            stylix.nixosModules.stylix
-            # home-manager
-            home-manager.nixosModules.home-manager
-            ./home-manager/nixos
-            {
-              home-manager.users.navega =
-                import ./home-manager/users/navega/profiles/desktop;
-            }
-          ];
-        };
+
         cogitator = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = { inherit inputs self; };
@@ -95,14 +64,15 @@
       };
 
       darwinConfigurations = {
-        # Placeholder name -- rename this attribute and hosts/darwin/ together.
-        darwin = nix-darwin.lib.darwinSystem {
+        macos = nix-darwin.lib.darwinSystem {
           specialArgs = { inherit inputs self; };
           modules = [
             # host
-            ./hosts/darwin/configuration.nix
+            ./hosts/configuration.nix
             # home-manager
             home-manager.darwinModules.home-manager
+            # nix-homebrew
+            nix-homebrew.darwinModules.nix-homebrew
           ];
         };
       };
