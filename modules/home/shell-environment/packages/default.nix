@@ -19,9 +19,9 @@ let
     # nixos-rebuild and darwin-rebuild
     rebuild =
       if pkgs.stdenv.hostPlatform.isDarwin then
-        "sudo darwin-rebuild switch --flake ~/nix"
+        "sudo darwin-rebuild switch --flake ~/nix-config"
       else
-        "sudo nixos-rebuild switch --flake ~/nix";
+        "sudo nixos-rebuild switch --flake ~/nix-config";
   };
 
 in {

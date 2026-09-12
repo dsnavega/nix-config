@@ -40,7 +40,6 @@
       stylix,
       nix-darwin,
       nix-homebrew,
-      llm-agents,
       ...
     }@inputs:
     {
@@ -68,7 +67,7 @@
           specialArgs = { inherit inputs self; };
           modules = [
             # host
-            ./hosts/configuration.nix
+            ./hosts/macos/configuration.nix
             # home-manager
             home-manager.darwinModules.home-manager
             # nix-homebrew
