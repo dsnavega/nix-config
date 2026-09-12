@@ -12,7 +12,7 @@
     ../../modules/nixos/system/users/navega
 
     # system layer -- nix, environment, locale, security, diagnostics
-    ../../modules/nixos/system/nix
+    ../../modules/nix/nixos
     ../../modules/nixos/system/environment
     ../../modules/nixos/system/locale
     ../../modules/nixos/system/security

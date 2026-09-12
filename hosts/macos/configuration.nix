@@ -2,8 +2,10 @@
 
 {
   imports = [
-    # darwin layer -- nix-darwin module: macOS system defaults (dock, finder, trackpad)
-    "${self}/modules/darwin"
+    # darwin layer -- nix daemon settings (flakes, caches, gc)
+    "${self}/modules/nix/darwin"
+    # host layer -- macOS system defaults (dock, finder, trackpad)
+    ./modules/darwin
     # host layer -- home-manager
     ./modules/home-manager
     # host layer -- homebrew (nix-homebrew + cask/brew set)

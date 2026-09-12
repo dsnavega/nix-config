@@ -21,7 +21,7 @@
       # terminal
       "ghostty"
       # keyboard
-      "homebrew"
+      "homerow"
       # ai, llm and agents
       "ollama-app"
       "hermes-desktop"
