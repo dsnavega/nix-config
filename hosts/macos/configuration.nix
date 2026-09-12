@@ -3,7 +3,7 @@
 {
   imports = [
     # darwin layer -- nix-darwin module: macOS system defaults (dock, finder, trackpad)
-    "./${self}/modules/darwin"
+    "${self}/modules/darwin"
     # host layer -- home-manager
     ./modules/home-manager
     # host layer -- homebrew (nix-homebrew + cask/brew set)
