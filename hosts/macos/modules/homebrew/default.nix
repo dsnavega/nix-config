@@ -20,6 +20,8 @@
     casks = [
       # terminal
       "ghostty"
+      # keyboard
+      "homebrew"
       # ai, llm and agents
       "ollama-app"
       "hermes-desktop"
