@@ -69,8 +69,12 @@
             ./hosts/macos/configuration.nix
             # home-manager
             home-manager.darwinModules.home-manager
+            # stylix
+            stylix.darwinModules.stylix
             # nix-homebrew
             nix-homebrew.darwinModules.nix-homebrew
+            # overlays
+            { nixpkgs.overlays = import ./modules/overlays inputs; }
           ];
         };
       };
