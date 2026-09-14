@@ -8,7 +8,7 @@
     "${self}/modules/home/browser/firefox.nix"
     "${self}/modules/home/browser/chromium.nix"
     "${self}/modules/home/terminal/alacritty.nix"
-    "${self}/modules/home/terminal/ghostty.nix"
+    "${self}/modules/home/terminal/ghostty/nixos"
     "${self}/modules/home/text-editor/zed.nix"
     "${self}/modules/home/text-editor/obsidian.nix"
   ];

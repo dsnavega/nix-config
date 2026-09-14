@@ -2,27 +2,38 @@
 {
   stylix = {
     enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/everforest.yaml";
     polarity = "dark";
 
     fonts = {
       monospace = {
-        package = pkgs.nerd-fonts.jetbrains-mono;
-        name = "JetBrainsMono Nerd Font Mono";
+        package = pkgs.nerd-fonts.hack;
+        name = "Hack Nerd Font Mono";
       };
+
+      # macOS system fonts. They ship with the OS, so there is nothing for nix to
+      # install; stylix still requires a package, hence the empty one. SF Pro and
+      # New York are private system fonts that apps cannot select by name, so
+      # these are the closest native families that are.
       sansSerif = {
-        package = pkgs.dejavu_fonts;
-        name = "DejaVu Sans";
+        package = pkgs.emptyDirectory;
+        name = "Helvetica Neue";
       };
       serif = {
-        package = pkgs.dejavu_fonts;
-        name = "DejaVu Serif";
+        package = pkgs.emptyDirectory;
+        name = "Charter";
       };
+      emoji = {
+        package = pkgs.emptyDirectory;
+        name = "Apple Color Emoji";
+      };
+
       sizes = {
-        applications = 12;
+        # 13pt is the macOS default body text size.
+        applications = 13;
+        desktop = 13;
+        popups = 13;
         terminal = 14;
-        desktop = 10;
-        popups = 12;
       };
     };
 

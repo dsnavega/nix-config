@@ -75,7 +75,11 @@ in {
     enableFishIntegration = true;
   };
 
-  programs.fzf.enable = true;
+  programs.fzf = {
+    enable = true;
+    # Atuin owns Ctrl-R (history/atuin); fzf keeps Ctrl-T and Alt-C.
+    historyWidget.command = "";
+  };
 
   home.sessionVariables = {
     # zoxide

@@ -9,7 +9,7 @@
     settings = {
       style = "compact";
       inline_height = 20;
-      show_help = true;
+      show_help = false;
       show_tabs = true;
 
       # Self-hosted sync server on cogitator (modules/nixos/.../services/atuin),
