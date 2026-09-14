@@ -2,26 +2,19 @@
 
 {
   imports = [
+    # shared layer -- the navega account (NixOS and darwin)
+    "${self}/modules/users/navega/darwin"
     # darwin layer -- nix daemon settings (flakes, caches, gc)
     "${self}/modules/nix/darwin"
-    # host layer -- macOS system defaults (dock, finder, trackpad)
+    # darwin layer -- macOS system defaults (dock, finder, trackpad)
     ./modules/darwin
-    # host layer -- home-manager
+    # system layer -- home-manager
     ./modules/home-manager
-    # host layer -- homebrew (nix-homebrew + cask/brew set)
+    # system layer -- homebrew (nix-homebrew + cask/brew set)
     ./modules/homebrew
-    # host layer -- stylix theming
+    # system layer -- stylix theming
     ./modules/stylix
-
   ];
-
-  # darwin specific user
   nixpkgs.hostPlatform = "aarch64-darwin";
-  users.users.navega = {
-    name = "navega";
-    home = "/Users/navega";
-  };
-  system.primaryUser = "navega";
   system.stateVersion = 6;
-
 }

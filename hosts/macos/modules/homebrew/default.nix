@@ -18,9 +18,17 @@
 
     # .app
     casks = [
-      # terminal
+      # terminal & zed
       "ghostty"
-      # keyboard
+      "zed"
+      # academic
+      "zotero"
+      "libreoffice"
+      # utilities
+      "appcleaner"
+      "balenaetcher"
+      "logi-options+"
+      #  keyboard
       "homerow"
       # ai, llm and agents
       "ollama-app"
@@ -37,6 +45,5 @@
       "antoniorodr/memo/memo"
       "hermes-agent"
     ];
-
   };
 }

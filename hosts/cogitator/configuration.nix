@@ -9,7 +9,7 @@
     ./modules/stylix
 
     # system layer -- users
-    ../../modules/nixos/system/users/navega
+    ../../modules/users/navega/nixos
 
     # system layer -- nix, environment, locale, security, diagnostics
     ../../modules/nix/nixos
