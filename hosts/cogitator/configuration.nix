@@ -24,6 +24,7 @@
     ../../modules/nixos/system/network/services/mosh
     ../../modules/nixos/system/network/services/tailscale
     ../../modules/nixos/system/network/services/avahi
+    ../../modules/nixos/system/network/services/atuin
 
     # system layer -- virtualisation (podman, distrobox)
     ../../modules/nixos/system/virtualisation
