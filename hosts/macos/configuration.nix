@@ -6,6 +6,8 @@
     "${self}/modules/users/navega/darwin"
     # darwin layer -- nix daemon settings (flakes, caches, gc)
     "${self}/modules/nix/darwin"
+    # shared layer -- sudo (password feedback, timeout)
+    "${self}/modules/sudo"
     # darwin layer -- macOS system defaults (dock, finder, trackpad)
     ./modules/darwin
     # system layer -- home-manager

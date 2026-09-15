@@ -9,5 +9,6 @@
     # .app installed via cask
     "${self}/modules/home/terminal/ghostty/darwin"
     "${self}/modules/home/text-editor/zed/darwin"
+    "${self}/modules/home/text-editor/obsidian/darwin"
   ];
 }

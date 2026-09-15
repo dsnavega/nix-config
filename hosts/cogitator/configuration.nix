@@ -16,6 +16,7 @@
     ../../modules/nixos/system/environment
     ../../modules/nixos/system/locale
     ../../modules/nixos/system/security
+    ../../modules/sudo
     ../../modules/nixos/system/diagnostics
 
     # system layer -- network (hardware, services)

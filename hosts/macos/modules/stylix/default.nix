@@ -1,4 +1,10 @@
 { pkgs, ... }:
+let
+  # Stylix multiplies these sizes by 4/3 for Ghostty and Zed on macOS, to match
+  # Linux's 96 DPI against macOS's 72. Write the size you actually want on
+  # screen, in macOS points, and undo that scaling here.
+  points = size: size * 3.0 / 4.0;
+in
 {
   stylix = {
     enable = true;
@@ -29,11 +35,10 @@
       };
 
       sizes = {
-        # 13pt is the macOS default body text size.
-        applications = 13;
+        terminal = points 14; # Ghostty, and Zed's editor buffer
+        applications = points 15; # Zed's UI
         desktop = 13;
         popups = 13;
-        terminal = 14;
       };
     };
 

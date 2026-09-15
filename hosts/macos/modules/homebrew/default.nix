@@ -21,15 +21,15 @@
       # terminal & zed
       "ghostty"
       "zed"
-      # academic
+      # academic & note-taking
+      "obsidian"
       "zotero"
       "libreoffice"
       # utilities
-      "appcleaner"
-      "balenaetcher"
-      "logi-options+"
-      #  keyboard
-      "homerow"
+      "appcleaner"          # .app and associated data removal
+      "balenaetcher"        # Bootable ISO to USB
+      "logi-options+"       # logitech software for keyboard and trackball
+      "homerow"             # keyboard driven control (vimium for macOS)
       # ai, llm and agents
       "ollama-app"
       "hermes-desktop"
