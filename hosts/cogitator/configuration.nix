@@ -26,6 +26,7 @@
     ../../modules/nixos/system/network/services/tailscale
     ../../modules/nixos/system/network/services/avahi
     ../../modules/nixos/system/network/services/atuin
+    ../../modules/nixos/system/network/services/samba
 
     # system layer -- virtualisation (podman, distrobox)
     ../../modules/nixos/system/virtualisation

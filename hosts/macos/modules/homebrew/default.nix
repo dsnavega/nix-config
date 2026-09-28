@@ -18,9 +18,11 @@
 
     # .app
     casks = [
-      # terminal & zed
+      # terminal & development
       "ghostty"
       "zed"
+      "docker-desktop"
+      "rstudio"
       # academic & note-taking
       "obsidian"
       "zotero"
@@ -30,11 +32,16 @@
       "balenaetcher"        # Bootable ISO to USB
       "logi-options+"       # logitech software for keyboard and trackball
       "homerow"             # keyboard driven control (vimium for macOS)
-      # ai, llm and agents
+      # artificial intelligence
       "ollama-app"
       "hermes-desktop"
       "lm-studio"
       "lm-studio-bionic"
+      # 3D
+      "meshlab"
+      # browsers
+      "firefox"
+      "zen"
     ];
 
     taps = [

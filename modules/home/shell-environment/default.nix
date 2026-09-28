@@ -14,5 +14,6 @@
     ./version-control/git
     ./packages
     ./artificial-intelligence
+    ./development/python
   ];
 }
