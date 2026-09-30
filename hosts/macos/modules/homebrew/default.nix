@@ -28,10 +28,10 @@
       "zotero"
       "libreoffice"
       # utilities
-      "appcleaner"          # .app and associated data removal
-      "balenaetcher"        # Bootable ISO to USB
-      "logi-options+"       # logitech software for keyboard and trackball
-      "homerow"             # keyboard driven control (vimium for macOS)
+      "appcleaner"                  # .app and associated data removal
+      "balenaetcher"                # Bootable ISO to USB
+      "logi-options+"               # logitech software for keyboard and trackball
+      "homerow"                     # keyboard driven control (vimium for macOS)
       # artificial intelligence
       "ollama-app"
       "hermes-desktop"
