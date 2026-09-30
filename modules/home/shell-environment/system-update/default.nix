@@ -18,59 +18,104 @@ let
   # silently skipped.
   track = "git -C ${flake} add -AN --";
 
-  # The two halves of "make this machine current", kept separate so the third
-  # command can be their composition rather than a third copy. Composing here
-  # rather than defining update-all as "update-brew && update-nix" is
-  # deliberate: bash would expand that nested alias, but fish abbreviations do
-  # not expand recursively, so the fish version would look for a binary named
-  # update-brew and fail.
-  nixUpdate =
-    "${track} && nix flake update --flake ${flake} && sudo ${rebuilder} switch --flake ${flake}";
-
-  # Casks that set `auto_updates true` -- ghostty, zed, obsidian, firefox and
-  # most of the others -- are skipped by `brew upgrade` on purpose, because
-  # they update themselves. Add --greedy here if you would rather brew drive
-  # those too, at the cost of re-downloading apps that had already updated.
-  brewUpdate = "brew update && brew upgrade && brew cleanup";
+  # The attribute name of this machine under darwinConfigurations in flake.nix.
+  # Only `rebuild-brew` needs it: darwin-rebuild finds the current host by
+  # itself, but a bare `nix eval` has to be told which configuration to read.
+  darwinHost = "macos";
 
 in {
 
+  # On darwin, homebrew is upgraded by activation rather than by a command of
+  # its own: hosts/macos/modules/homebrew sets onActivation.autoUpdate and
+  # .upgrade, so every `brew bundle` run during a switch does `brew update &&
+  # brew upgrade` as well as installing what is declared. Two consequences
+  # worth knowing, because neither is visible from here:
+  #
+  #   - `rebuild` is not idempotent on darwin. It applies the configuration
+  #     and upgrades homebrew packages in the same step, so which cask
+  #     versions you land on depends on when you ran it.
+  #   - there is no separate brew command, and `update-all` really does mean
+  #     all: a dedicated one would only repeat what the switch already did.
   my.shellCommands = {
 
-    # --- apply the configuration as written -------------------------------
-
-    # rebuild: evaluate, build and activate. Needs sudo. Idempotent now that
-    # homebrew no longer upgrades during activation (see the homebrew module
-    # in hosts/macos): running it twice is a no-op rather than a surprise
-    # round of cask upgrades in the middle of an unrelated module edit.
+    # rebuild: evaluate, build and activate the configuration as written.
+    # Needs sudo.
     rebuild = "${track} && sudo ${rebuilder} switch --flake ${flake}";
 
     # rebuild-test: evaluate and build, but do not activate. No sudo, so this
     # is the loop to use while editing modules -- it catches every eval error
-    # and every build failure that `rebuild` would.
+    # and every build failure that `rebuild` would, and leaves homebrew alone
+    # because nothing is activated.
     rebuild-test = "${track} && ${rebuilder} build --flake ${flake}";
 
     # rebuild-eval: evaluate only. Fastest check that the module tree still
     # wires up -- catches bad import paths without building anything.
     rebuild-eval = "${track} && ${rebuilder} build --flake ${flake} --dry-run";
 
-    # --- pull newer versions from upstream --------------------------------
-
-    # update-nix: refresh flake inputs, then activate. Everything nix owns.
-    update-nix = nixUpdate;
+    # update-all: move everything forward. Refreshes the flake inputs, then
+    # activates -- which on darwin also carries homebrew along. This is the
+    # one to reach for periodically; `rebuild` is the one for applying an edit
+    # you just made.
+    update-all =
+      "${track} && nix flake update --flake ${flake} && sudo ${rebuilder} switch --flake ${flake}";
 
   } // lib.optionalAttrs isDarwin {
 
-    # update-brew: everything homebrew owns. Upgrading is imperative by
-    # nature -- which versions you land on depends on when you run it -- so
-    # it lives behind its own command instead of riding along with every
-    # activation.
-    update-brew = brewUpdate;
+    # rebuild-brew: install what homebrew.casks/brews/taps declares, without
+    # building or activating anything else. For the common case of adding one
+    # cask to the config and wanting it on disk now.
+    #
+    # It works because `homebrew.brewfile` is a plain string option -- the
+    # module renders the Brewfile during evaluation, so reading it needs no
+    # system build at all (about a tenth of a second warm) and `brew bundle`
+    # takes it on stdin via --file=-. No temp file, and no sudo: activation
+    # only uses sudo to drop from root back to this user.
+    #
+    # Deliberately narrower than the homebrew half of a real switch:
+    #
+    #   --no-upgrade      installs what is missing and leaves the versions of
+    #                     everything else alone, so adding a cask cannot drag
+    #                     in a round of unrelated upgrades.
+    #   no --zap          activation passes --zap --force-cleanup, which
+    #                     removes anything not in the Brewfile along with its
+    #                     data. Adding a cask should not be able to delete
+    #                     one, so pruning waits for the next `rebuild`.
+    #
+    # Auto-update is left on: it refreshes homebrew's API cache, which is how
+    # a cask added to the config today is found at all.
+    rebuild-brew = "${track} && nix eval --raw"
+      + " ${flake}#darwinConfigurations.${darwinHost}.config.homebrew.brewfile"
+      + " | brew bundle install --file=- --no-upgrade";
 
-    # update-all: both, homebrew first so that the activation's `brew bundle`
-    # has the last word on what is installed. Darwin only; on NixOS,
-    # update-nix already is everything.
-    update-all = "${brewUpdate} && ${nixUpdate}";
+    # rebuild-home: activate the home-manager half only -- shell config,
+    # dotfiles, user packages, LaunchAgents. This is the fast loop for edits
+    # under modules/home, which is where most of them land: the generated
+    # activate script contains no reference to brew and needs no sudo, so it
+    # cannot stall on a pending cask upgrade the way a full switch can.
+    #
+    # $USER rather than a second hardcoded name: it has to match the attribute
+    # under home-manager.users, which it does on this machine.
+    #
+    # Darwin only, deliberately. On NixOS `nixos-rebuild switch` never carries
+    # homebrew along, so there is nothing to carve out -- the reason this slice
+    # exists is a macOS-specific one.
+    #
+    # System-level changes still need `rebuild`: darwin defaults, homebrew,
+    # anything under launchd at the system level.
+    #
+    # --out-link to a fixed path, rather than substituting the built path into
+    # command position. Two forms that look obvious do not survive all three
+    # shells: fish rejects $(...)/activate outright ("command substitutions
+    # not allowed in command position"), and `xargs -I% %/activate` only
+    # substitutes % in arguments, never in the utility name, so it tries to
+    # exec a file literally called %. A fixed path needs no substitution, and
+    # && short-circuits cleanly when the build fails.
+    #
+    # The out-link is also a GC root, which keeps the generation alive between
+    # the build and the activation.
+    rebuild-home = "${track} && nix build --out-link $TMPDIR/hm-generation"
+      + " ${flake}#darwinConfigurations.${darwinHost}.config.home-manager"
+      + ".users.$USER.home.activationPackage && $TMPDIR/hm-generation/activate";
   };
 
 }
