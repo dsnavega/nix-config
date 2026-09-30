@@ -1,10 +1,8 @@
 { pkgs, lib, ... }:
 let
 
-  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-
   flake = "$HOME/nix-config";
-
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   rebuilder = if isDarwin then "darwin-rebuild" else "nixos-rebuild";
 
   # Nix reads a flake through git, so a file that exists on disk but is not in
